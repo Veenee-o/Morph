@@ -23,7 +23,8 @@ export interface GameResult {
 // Calculate par score based on moves and word length
 export const calculateParScore = (moves: number, wordLength: number): number => {
   const par = DEFAULT_PAR_VALUES[wordLength] || wordLength + 1;
-  return moves - par;
+  // Calculate how many strokes under/over par (negative is good, positive is bad)
+  return par - moves;
 };
 
 // Get par label based on par score
