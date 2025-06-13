@@ -94,7 +94,7 @@ const RecentGames: React.FC<RecentGamesProps> = ({ games, onClearHistory, classN
                         {formatGolfScore(game.parScore)}
                       </span>
                       <span className="text-gray-400">
-                        ({game.moves - game.parScore})
+                        (Par {game.par})
                       </span>
                     </div>
                   )}
