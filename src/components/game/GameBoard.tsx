@@ -118,7 +118,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
       moves: result.wordPath.length,
       date: new Date().toISOString(),
       par: getParForWordLength(puzzle.startWord.length),
-      parScore: result.wordPath.length - getParForWordLength(puzzle.startWord.length)
+      parScore: getParForWordLength(puzzle.startWord.length) - result.wordPath.length
     };
     
     // Save the game result

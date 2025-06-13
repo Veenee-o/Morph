@@ -125,7 +125,7 @@ const createPuzzle = (
   };
 };
 
-export const generatePuzzle = (): Puzzle => {
+export const generatePuzzle = (difficulty: 'easy' | 'medium' | 'hard' = 'medium'): Puzzle => {
   // Get all available word lengths (3, 4, 5)
   const availableLengths = Object.keys(WORD_LISTS).map(Number);
   
@@ -148,8 +148,8 @@ export const generatePuzzle = (): Puzzle => {
     endWord = ladder[ladder.length - 1];
   }
   
-  // Create and return the puzzle (using 'medium' as default difficulty)
-  return createPuzzle(startWord, endWord, 'medium', ladder);
+  // Create and return the puzzle with the specified difficulty
+  return createPuzzle(startWord, endWord, difficulty, ladder);
 };
 
 export const validateWord = (word: string, previousWord: string, isFirstWord: boolean): { isValid: boolean; error?: string } => {
