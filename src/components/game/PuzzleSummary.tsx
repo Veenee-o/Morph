@@ -30,20 +30,19 @@ const getParForWordLength = (wordLength: number): number => {
 const getParLabel = (score: number, forTrophy: boolean = false): string => {
   // Score is calculated as par - moves, so:
   // - Positive score means under par (good)
-  // - Zero means par
+  // - Zero means par (even)
   // - Negative score means over par (bad)
-  const absoluteScore = Math.abs(score);
   
   if (forTrophy) {
     // For trophy display, show the relative score (par - moves)
     if (score > 0) return `-${score}`;  // Under par (good)
     if (score === 0) return 'E';        // 'E' for even/par
-    return `+${absoluteScore}`;         // Over par (bad)
+    return `+${Math.abs(score)}`;       // Over par (bad)
   } else {
     // For other displays, show the traditional par format
     if (score > 0) return `${score} Under`;  // Under par (good)
-    if (score === 0) return 'Par';
-    return `${absoluteScore} Over`;         // Over par (bad)
+    if (score === 0) return 'Par';          // Exactly par
+    return `${Math.abs(score)} Over`;        // Over par (bad)
   }
 };
 
