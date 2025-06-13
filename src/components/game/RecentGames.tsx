@@ -4,15 +4,15 @@ import { GameResult } from '../../lib/gameStorage';
 
 // Helper function to format par score in golf style (e.g., -1, E, +1)
 const formatGolfScore = (score: number): string => {
-  if (score > 0) return `-${score}`; // Negative numbers are good (under par)
+  if (score < 0) return `${score}`; // Negative means under par (good)
   if (score === 0) return 'E';
-  return `+${Math.abs(score)}`; // Positive numbers are bad (over par)
+  return `+${score}`; // Positive means over par (bad)
 };
 
 // Helper function to get the appropriate color class for the score
 const getScoreColor = (score: number): string => {
-  if (score > 0) return 'text-green-600'; // Positive score is good (under par)
-  if (score < 0) return 'text-red-600';  // Negative score is bad (over par)
+  if (score < 0) return 'text-green-600'; // Negative score is good (under par)
+  if (score > 0) return 'text-red-600';  // Positive score is bad (over par)
   return 'text-blue-600';                // Par
 };
 
@@ -94,7 +94,7 @@ const RecentGames: React.FC<RecentGamesProps> = ({ games, onClearHistory, classN
                         {formatGolfScore(game.parScore)}
                       </span>
                       <span className="text-gray-400">
-                        (Par {game.par})
+                        ({game.moves})
                       </span>
                     </div>
                   )}
