@@ -111,7 +111,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
     
     // Use puzzle's parSteps if available, otherwise calculate based on word length
     const par = puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length);
-    const moves = result.wordPath.length;
+    // Add 1 to moves since the start word is not included in result.wordPath
+    const moves = result.wordPath.length + 1;
+    // Calculate par score (par - moves)
+    // Negative means under par (good), positive means over par (bad)
     const parScore = par - moves;
     
     const gameResult = {
