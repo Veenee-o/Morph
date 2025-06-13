@@ -28,16 +28,22 @@ const getParForWordLength = (wordLength: number): number => {
 
 // Helper function to get par label
 const getParLabel = (score: number, forTrophy: boolean = false): string => {
+  // Score is calculated as par - moves, so:
+  // - Positive score means under par (good)
+  // - Zero means par
+  // - Negative score means over par (bad)
+  const absoluteScore = Math.abs(score);
+  
   if (forTrophy) {
-    // For trophy display, show the relative score (moves - par)
-    if (score < 0) return score.toString();
-    if (score === 0) return 'E';  // 'E' for even/par
-    return `+${score}`;
+    // For trophy display, show the relative score (par - moves)
+    if (score > 0) return `-${score}`;  // Under par (good)
+    if (score === 0) return 'E';        // 'E' for even/par
+    return `+${absoluteScore}`;         // Over par (bad)
   } else {
     // For other displays, show the traditional par format
-    if (score < 0) return `Par ${-score}`;
+    if (score > 0) return `${score} Under`;  // Under par (good)
     if (score === 0) return 'Par';
-    return `+${score}`;
+    return `${absoluteScore} Over`;         // Over par (bad)
   }
 };
 
@@ -98,7 +104,7 @@ export const PuzzleSummary: React.FC<PuzzleSummaryProps> = ({
               </div>
               <span className="text-sm text-gray-500">Score</span>
               <span className={`text-2xl font-bold ${
-                parScore <= 0 ? 'text-green-600' : 'text-red-600'
+                parScore > 0 ? 'text-green-600' : parScore === 0 ? 'text-blue-600' : 'text-red-600'
               }`}>
                 {getParLabel(parScore, true)}
               </span>
