@@ -40,13 +40,20 @@ export const getParLabel = (parScore: number): string => {
 const STORAGE_KEY = 'morph_game_history';
 const MAX_HISTORY = 10;
 
-export const saveGameResult = (result: Omit<GameResult, 'id' | 'par' | 'parScore'> & { wordPath: string[]; time: number; isComplete?: boolean }): void => {
+export const saveGameResult = (result: Omit<GameResult, 'id' | 'par' | 'parScore'> & { 
+  wordPath: string[]; 
+  time: number; 
+  isComplete?: boolean;
+  par?: number; // Optional par value from the puzzle
+}): void => {
   try {
     const history = getGameHistory();
     const wordLength = result.startWord.length;
-    const par = DEFAULT_PAR_VALUES[wordLength] || wordLength + 1;
+    // Use the provided par value if it exists and is defined, otherwise calculate from word length
+    const par = result.par !== undefined ? result.par : (DEFAULT_PAR_VALUES[wordLength] || wordLength + 1);
     const moves = result.wordPath.length - 1;
-    const parScore = calculateParScore(moves, wordLength);
+    // Calculate par score using the actual par value
+    const parScore = par - moves;
     
     const newGame: GameResult = {
       ...result,

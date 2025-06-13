@@ -26,6 +26,7 @@ type LocalGameResult = {
   morphs: number;
   wordPath: string[];
   isComplete: boolean;
+  par?: number; // Optional par value from the puzzle
 };
 
 type GameState = {
@@ -250,7 +251,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
         time: timeElapsed,
         morphs: newSteps.length - 1,
         wordPath: newSteps,
-        isComplete: true
+        isComplete: true,
+        par: puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length)
       };
       handleGameComplete(result);
     }
@@ -283,7 +285,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
                 time: prev.maxTime,
                 morphs: prev.steps.length,
                 wordPath: [...prev.steps],
-                isComplete: false
+                isComplete: false,
+                par: puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length)
               };
               handleGameComplete(result);
             }
