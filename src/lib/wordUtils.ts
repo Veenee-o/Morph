@@ -323,16 +323,33 @@ function initializeWordLists() {
 initializeWordLists();
 initializeDictionary();
 
-// --- Add external common word list (word-list-english) ---
-import wordList from 'word-list-english';
+// --- Add external common word list (word-list) ---
+import wordListPath from 'word-list';
 
-for (const w of wordList) {
-  const upper = w.toUpperCase();
-  if (upper.length >= 3 && upper.length <= 8 && !OFFENSIVE_WORDS.has(upper)) {
-    DICTIONARY.add(upper);
+// In CRA, importing a text file path returns the URL to the asset. Fetch it at runtime
+async function loadExternalDictionary() {
+  try {
+    const response = await fetch(wordListPath);
+    const text = await response.text();
+    text.split('\n').forEach((w) => {
+      const upper = w.trim().toUpperCase();
+      if (
+        upper.length >= 3 &&
+        upper.length <= 8 &&
+        !OFFENSIVE_WORDS.has(upper)
+      ) {
+        DICTIONARY.add(upper);
+      }
+    });
+    console.log(`Dictionary expanded to ${DICTIONARY.size} words (with word-list)`);
+  } catch (err) {
+    console.error('Failed to load external word list', err);
   }
 }
-console.log(`Dictionary expanded to ${DICTIONARY.size} words (with word-list-english)`);
+
+if (typeof fetch !== 'undefined') {
+  loadExternalDictionary();
+}
 
 // Test function to verify word validation
 export function testWordValidation() {
@@ -912,5 +929,3 @@ export const estimateParScore = (startWord: string, endWord: string): number => 
   // Ensure minimum par of 3 for very easy puzzles
   return Math.max(3, Math.min(estimatedPar, 12)); // Cap at 12 for very difficult puzzles
 };
-
-// All exports are done inline with the function declarations
