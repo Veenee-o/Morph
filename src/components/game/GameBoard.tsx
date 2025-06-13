@@ -257,7 +257,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
       const timeElapsed = Math.floor((endTime - gameState.startTime) / 1000);
       const result: LocalGameResult = {
         time: timeElapsed,
-        morphs: gameState.moves, // Use moves from gameState instead of calculating from steps
+        // The number of moves is equal to the number of words in the path (including start and end words) minus 1
+        // For example: [start, word1, word2, end] = 3 moves (start->word1, word1->word2, word2->end)
+        morphs: newSteps.length, // This is the correct number of moves
         wordPath: newSteps,
         isComplete: true,
         par: puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length)
