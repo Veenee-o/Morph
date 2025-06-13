@@ -323,6 +323,17 @@ function initializeWordLists() {
 initializeWordLists();
 initializeDictionary();
 
+// --- Add external common word list (word-list-json) ---
+import wordList from 'word-list-json';
+
+for (const w of wordList) {
+  const upper = w.toUpperCase();
+  if (upper.length >= 3 && upper.length <= 8 && !OFFENSIVE_WORDS.has(upper)) {
+    DICTIONARY.add(upper);
+  }
+}
+console.log(`Dictionary expanded to ${DICTIONARY.size} words (with word-list-json)`);
+
 // Test function to verify word validation
 export function testWordValidation() {
   const testWords = [
