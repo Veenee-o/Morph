@@ -109,6 +109,11 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
   const handleGameComplete = useCallback(async (result: LocalGameResult) => {
     if (!puzzle) return;
     
+    // Use puzzle's parSteps if available, otherwise calculate based on word length
+    const par = puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length);
+    const moves = result.wordPath.length;
+    const parScore = par - moves;
+    
     const gameResult = {
       id: Date.now().toString(),
       startWord: puzzle.startWord,
@@ -116,10 +121,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
       time: result.time,
       wordPath: [puzzle.startWord, ...result.wordPath],
       isComplete: result.isComplete,
-      moves: result.wordPath.length,
+      moves,
       date: new Date().toISOString(),
-      par: getParForWordLength(puzzle.startWord.length),
-      parScore: getParForWordLength(puzzle.startWord.length) - result.wordPath.length
+      par,
+      parScore
     };
     
     // Save the game result
