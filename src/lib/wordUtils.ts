@@ -114,136 +114,6 @@ const initializeDictionary = () => {
   console.log('Sample words in dictionary:', sampleWords);
 };
 
-// Common English words for our word lists (expanded and filtered)
-// Excluding obscure words and focusing on more common vocabulary
-const COMMON_WORDS = [
-  // 3-letter words (expanded)
-  'AAH', 'AAS', 'ABA', 'ABB', 'ABO', 'ABS', 'ABY', 'ACE', 'ACH', 'ACT', 
-  'ADD', 'ADO', 'ADS', 'ADZ', 'AFF', 'AFT', 'AGA', 'AGE', 'AGO', 'AGS', 
-  'AHA', 'AHI', 'AHS', 'AIA', 'AID', 'AIL', 'AIM', 'AIN', 'AIR', 'AIS', 
-  'AIT', 'AKA', 'ALA', 'ALB', 'ALE', 'ALL', 'ALP', 'ALS', 'ALT', 'AMA', 
-  'AMI', 'AMP', 'AMU', 'ANA', 'AND', 'ANE', 'ANI', 'ANN', 'ANT', 'ANY', 
-  'APE', 'APO', 'APP', 'APT', 'ARB', 'ARC', 'ARD', 'ARE', 'ARF', 'ARK', 
-  'ARM', 'ARS', 'ART', 'ASH', 'ASK', 'ASP', 'ASS', 'ATE', 'ATS', 'ATT', 
-  'AUE', 'AUX', 'AVA', 'AVE', 'AVO', 'AWA', 'AWE', 'AWK', 'AWL', 'AWN', 
-  'AXE', 'AYE', 'AYS', 'AYU', 'AZO', 'BAA', 'BAC', 'BAD', 'BAG', 'BAH', 
-  'BAL', 'BAM', 'BAN', 'BAP', 'BAR', 'BAS', 'BAT', 'BAY', 'BED', 'BEE', 
-  'BEG', 'BEN', 'BES', 'BET', 'BEY', 'BIB', 'BID', 'BIG', 'BIN', 'BIO', 
-  'BIS', 'BIT', 'BIZ', 'BOA', 'BOB', 'BOD', 'BOG', 'BOH', 'BOI', 'BOK', 
-  'BON', 'BOO', 'BOP', 'BOR', 'BOS', 'BOT', 'BOW', 'BOX', 'BOY', 'BRA', 
-  'BRO', 'BRR', 'BRU', 'BUB', 'BUD', 'BUG', 'BUM', 'BUN', 'BUR', 'BUS', 
-  'BUT', 'BUY', 'BYE', 'BYS', 'CAB', 'CAD', 'CAM', 'CAN', 'CAP', 'CAR', 
-  'CAT', 'CAW', 'CAY', 'CEE', 'CEL', 'CEP', 'CHA', 'CHE', 'CHI', 'CIG', 
-  'CIS', 'CIT', 'CLY', 'COB', 'COD', 'COG', 'COL', 'CON', 'COO', 'COP', 
-  'COR', 'COS', 'COT', 'COW', 'COX', 'COY', 'COZ', 'CRU', 'CRY', 'CUB', 
-  'CUD', 'CUE', 'CUM', 'CUP', 'CUR', 'CUT', 'CWM', 'DAB', 'DAD', 'DAE', 
-  'DAG', 'DAH', 'DAK', 'DAL', 'DAM', 'DAN', 'DAP', 'DAW', 'DAY', 'DEB', 
-  'DEE', 'DEF', 'DEG', 'DEI', 'DEL', 'DEN', 'DEV', 'DEW', 'DEX', 'DEY', 
-  'DIB', 'DID', 'DIE', 'DIF', 'DIG', 'DIM', 'DIN', 'DIP', 'DIS', 'DIT', 
-  'DOC', 'DOE', 'DOG', 'DOH', 'DOL', 'DOM', 'DON', 'DOO', 'DOP', 'DOR', 
-  'DOS', 'DOT', 'DOW', 'DRY', 'DSO', 'DUB', 'DUD', 'DUE', 'DUG', 'DUH', 
-  'DUI', 'DUM', 'DUN', 'DUO', 'DUP', 'DYE', 'DZO', 'EAN', 'EAR', 'EAS', 
-  'EAT', 'EAU', 'EBB', 'ECH', 'ECO', 'ECU', 'EDH', 'EDS', 'EEK', 'EEL', 
-  'EEN', 'EFF', 'EFS', 'EFT', 'EGG', 'EGO', 'EHS', 'EIK', 'EKE', 'ELD', 
-  'ELF', 'ELK', 'ELL', 'ELM', 'ELS', 'EME', 'EMO', 'EMS', 'EMU', 'END', 
-  'ENG', 'ENS', 'EON', 'ERA', 'ERE', 'ERF', 'ERG', 'ERK', 'ERN', 'ERR', 
-  'ERS', 'ESS', 'EST', 'ETA', 'ETH', 'EUK', 'EVE', 'EWE', 'EWK', 'EWT', 
-  'EXO', 'EYE', 'EYG', 'EYR', 'FAA', 'FAB', 'FAD', 'FAE', 'FAG', 'FAH', 
-  'FAN', 'FAP', 'FAR', 'FAS', 'FAT', 'FAW', 'FAX', 'FAY', 'FED', 'FEE', 
-  'FEG', 'FEH', 'FEM', 'FEN', 'FER', 'FES', 'FET', 'FEU', 'FEW', 'FEY', 
-  'FEZ', 'FIB', 'FID', 'FIE', 'FIG', 'FIL', 'FIN', 'FIR', 'FIT', 'FIX', 
-  'FIZ', 'FLU', 'FLY', 'FOB', 'FOE', 'FOG', 'FOH', 'FON', 'FOP', 'FOR', 
-  'FOU', 'FOX', 'FOY', 'FRA', 'FRY', 'FUB', 'FUD', 'FUG', 'FUN', 'FUR', 
-  'GAB', 'GAD', 'GAE', 'GAG', 'GAL', 'GAM', 'GAN', 'GAP', 'GAR', 'GAS', 
-  'GAT', 'GAU', 'GAY', 'GED', 'GEE', 'GEL', 'GEM', 'GEN', 'GET', 'GEY', 
-  'GHI', 'GIB', 'GID', 'GIE', 'GIF', 'GIG', 'GIN', 'GIO', 'GIP', 'GIS', 
-  'GIT', 'GJU', 'GNU', 'GOA', 'GOB', 'GOD', 'GOE', 'GON', 'GOO', 'GOR', 
-  'GOS', 'GOT', 'GOV', 'GOX', 'GOY', 'GRR', 'GUB', 'GUE', 'GUL', 'GUM', 
-  'GUN', 'GUP', 'GUR', 'GUS', 'GUT', 'GUV', 'GUY', 'GYM', 'GYP', 'HAD', 
-  'HAE', 'HAG', 'HAH', 'HAJ', 'HAM', 'HAN', 'HAO', 'HAP', 'HAS', 'HAT', 
-  'HAW', 'HAY', 'HEH', 'HEM', 'HEN', 'HEP', 'HER', 'HES', 'HET', 'HEW', 
-  'HEX', 'HEY', 'HIC', 'HID', 'HIE', 'HIM', 'HIN', 'HIP', 'HIS', 'HIT', 
-  'HMM', 'HOA', 'HOB', 'HOC', 'HOD', 'HOE', 'HOG', 'HOH', 'HOI', 'HOM', 
-  'HON', 'HOO', 'HOP', 'HOS', 'HOT', 'HOV', 'HOW', 'HOX', 'HOY', 'HUB', 
-  'HUE', 'HUG', 'HUH', 'HUI', 'HUM', 'HUN', 'HUP', 'HUT', 'HYE', 'HYP', 
-  'ICE', 'ICH', 'ICK', 'ICY', 'IDE', 'IDS', 'IFF', 'IGG', 'ILK', 'ILL', 
-  'IMP', 'ING', 'INK', 'INN', 'INS', 'ION', 'IOS', 'IRE', 'IRK', 'ISH', 
-  'ISM', 'ISO', 'ITA', 'ITS', 'IVY', 'IWI', 'JAB', 'JAG', 'JAM', 'JAP', 
-  'JAR', 'JAW', 'JAY', 'JEE', 'JET', 'JEU', 'JEW', 'JIG', 'JIN', 'JIZ', 
-  'JOB', 'JOE', 'JOG', 'JOL', 'JOR', 'JOT', 'JOW', 'JOY', 'JUD', 'JUG', 
-  'JUN', 'JUS', 'JUT', 'KAB', 'KAE', 'KAF', 'KAI', 'KAM', 'KAS', 'KAT', 
-  'KAW', 'KAY', 'KEA', 'KEB', 'KED', 'KEF', 'KEG', 'KEN', 'KEP', 'KET', 
-  'KEX', 'KEY', 'KHI', 'KID', 'KIF', 'KIN', 'KIP', 'KIR', 'KIS', 'KIT', 
-  'KOA', 'KOB', 'KOI', 'KOP', 'KOR', 'KOS', 'KOW', 'KUE', 'KYE', 'LAB', 
-  'LAC', 'LAD', 'LAG', 'LAH', 'LAM', 'LAP', 'LAR', 'LAS', 'LAT', 'LAV', 
-  'LAW', 'LAX', 'LAY', 'LEA', 'LED', 'LEE', 'LEG', 'LEI', 'LEK', 'LEP', 
-  'LET', 'LEU', 'LEV', 'LEX', 'LEY', 'LEZ', 'LIB', 'LID', 'LIE', 'LIN', 
-  'LIP', 'LIS', 'LIT', 'LOB', 'LOG', 'LOO', 'LOP', 'LOR', 'LOS', 'LOT', 
-  'LOU', 'LOW', 'LOX', 'LUD', 'LUG', 'LUM', 'LUR', 'LUV', 'LUX', 'LUZ', 
-  'LYE', 'LYM', 'MAA', 'MAC', 'MAD', 'MAE', 'MAG', 'MAK', 'MAL', 'MAM', 
-  'MAN', 'MAP', 'MAR', 'MAS', 'MAT', 'MAW', 'MAX', 'MAY', 'MED', 'MEE', 
-  'MEG', 'MEH', 'MEL', 'MEM', 'MEN', 'MES', 'MET', 'MEU', 'MEW', 'MHO', 
-  'MIB', 'MIC', 'MID', 'MIG', 'MIL', 'MIM', 'MIR', 'MIS', 'MIX', 'MIZ', 
-  'MMM', 'MOA', 'MOB', 'MOC', 'MOD', 'MOG', 'MOI', 'MOL', 'MOM', 'MON', 
-  'MOO', 'MOP', 'MOR', 'MOS', 'MOT', 'MOU', 'MOW', 'MOY', 'MUD', 'MUG', 
-  'MUM', 'MUN', 'MUS', 'MUT', 'MUX', 'MYC', 'NAB', 'NAE', 'NAG', 'NAK', 
-  'NAM', 'NAN', 'NAP', 'NAV', 'NAY', 'NEB', 'NED', 'NEE', 'NEF', 'NEG', 
-  'NEK', 'NEP', 'NET', 'NEW', 'NIB', 'NID', 'NIE', 'NIL', 'NIM', 'NIP', 
-  'NIS', 'NIT', 'NIX', 'NOB', 'NOD', 'NOG', 'NOH', 'NOM', 'NON', 'NOO', 
-  'NOR', 'NOS', 'NOT', 'NOW', 'NOX', 'NTH', 'NUB', 'NUG', 'NUN', 'NUR', 
-  'NUS', 'NUT', 'NYE', 'NYM', 'OAF', 'OAK', 'OAR', 'OAT', 'OBA', 'OBE', 
-  'OBI', 'OBO', 'OCA', 'ODA', 'ODD', 'ODE', 'ODS', 'OES', 'OFF', 'OFT', 
-  'OHM', 'OHO', 'OHS', 'OIK', 'OIL', 'OIS', 'OKA', 'OKE', 'OLD', 'OLE', 
-  'OLM', 'OMS', 'ONE', 'ONO', 'ONS', 'OOF', 'OOH', 'OOM', 'OON', 'OOP', 
-  'OOR', 'OOS', 'OOT', 'OPE', 'OPS', 'OPT', 'ORA', 'ORB', 'ORC', 'ORD', 
-  'ORE', 'ORF', 'ORS', 'ORT', 'OSE', 'OUD', 'OUR', 'OUT', 'OVA', 'OWE', 
-  'OWL', 'OWN', 'OWT', 'OXO', 'OXY', 'OYE', 'OYS', 'PAC', 'PAD', 'PAH', 
-  'PAK', 'PAL', 'PAM', 'PAN', 'PAP', 'PAR', 'PAS', 'PAT', 'PAV', 'PAW', 
-  'PAX', 'PAY', 'PEA', 'PEC', 'PED', 'PEE', 'PEG', 'PEH', 'PEN', 'PEP', 
-  'PER', 'PES', 'PET', 'PEW', 'PHI', 'PHO', 'PHT', 'PIA', 'PIC', 'PIE', 
-  'PIG', 'PIN', 'PIP', 'PIR', 'PIS', 'PIT', 'PIU', 'PIX', 'PLU', 'PLY', 
-  'POD', 'POH', 'POI', 'POL', 'POM', 'POO', 'POP', 'POS', 'POT', 'POW', 
-  'POX', 'PRO', 'PRY', 'PSI', 'PST', 'PUB', 'PUD', 'PUG', 'PUH', 'PUL', 
-  'PUN', 'PUP', 'PUR', 'PUS', 'PUT', 'PUY', 'PYA', 'PYE', 'PYX', 'QAT', 
-  'QIS', 'QUA', 'RAD', 'RAG', 'RAH', 'RAI', 'RAJ', 'RAM', 'RAN', 'RAP', 
-  'RAS', 'RAT', 'RAV', 'RAW', 'RAX', 'RAY', 'REB', 'REC', 'RED', 'REE', 
-  'REF', 'REG', 'REH', 'REI', 'REM', 'REN', 'REO', 'REP', 'RES', 'RET', 
-  'REV', 'REW', 'REX', 'RHO', 'RHY', 'RIA', 'RIB', 'RID', 'RIF', 'RIG', 
-  'RIM', 'RIN', 'RIP', 'RIT', 'RIZ', 'ROB', 'ROC', 'ROD', 'ROE', 'ROK', 
-  'ROM', 'ROO', 'ROT', 'ROW', 'RUB', 'RUC', 'RUD', 'RUE', 'RUG', 'RUM', 
-  'RUN', 'RUT', 'RYA', 'RYE', 'RYU', 'SAB', 'SAC', 'SAD', 'SAE', 'SAG', 
-  'SAI', 'SAL', 'SAM', 'SAN', 'SAP', 'SAR', 'SAT', 'SAU', 'SAV', 'SAW', 
-  'SAX', 'SAY', 'SAZ', 'SEA', 'SEC', 'SED', 'SEE', 'SEG', 'SEI', 'SEL', 
-  'SEN', 'SER', 'SET', 'SEW', 'SEX', 'SEY', 'SEZ', 'SHA', 'SHE', 'SHH', 
-  'SHY', 'SIB', 'SIC', 'SIF', 'SIK', 'SIM', 'SIN', 'SIP', 'SIR', 'SIS', 
-  'SIT', 'SIX', 'SKA', 'SKI', 'SKY', 'SLY', 'SMA', 'SNY', 'SOB', 'SOC', 
-  'SOD', 'SOH', 'SOL', 'SOM', 'SON', 'SOP', 'SOS', 'SOT', 'SOU', 'SOV', 
-  'SOW', 'SOY', 'SPA', 'SPY', 'STY', 'SUB', 'SUD', 'SUE', 'SUI', 'SUK', 
-  'SUM', 'SUN', 'SUP', 'SUQ', 'SUS', 'SWY', 'SYE', 'SYN', 'TAB', 'TAD', 
-  'TAE', 'TAG', 'TAI', 'TAJ', 'TAM', 'TAN', 'TAO', 'TAP', 'TAR', 'TAS', 
-  'TAT', 'TAU', 'TAV', 'TAW', 'TAX', 'TAY', 'TEA', 'TEC', 'TED', 'TEE', 
-  'TEF', 'TEG', 'TEL', 'TEN', 'TES', 'TET', 'TEW', 'THE', 'THO', 'THY', 
-  'TIC', 'TID', 'TIE', 'TIG', 'TIK', 'TIL', 'TIN', 'TIP', 'TIS', 'TIT', 
-  'TIZ', 'TOC', 'TOD', 'TOE', 'TOG', 'TOM', 'TON', 'TOO', 'TOP', 'TOR', 
-  'TOT', 'TOW', 'TOY', 'TRY', 'TSK', 'TUB', 'TUG', 'TUI', 'TUM', 'TUN', 
-  'TUP', 'TUT', 'TUX', 'TWA', 'TWO', 'TYE', 'TYG', 'UDO', 'UDU', 'UEY', 
-  'UFO', 'UGH', 'UGS', 'UKE', 'ULU', 'UMM', 'UMP', 'UNI', 'UNS', 'UPO', 
-  'UPS', 'URB', 'URD', 'URE', 'URN', 'URP', 'USE', 'UTA', 'UTE', 'UTS', 
-  'UVA', 'VAC', 'VAG', 'VAN', 'VAR', 'VAS', 'VAT', 'VAU', 'VAV', 'VAW', 
-  'VEE', 'VEG', 'VET', 'VEX', 'VIA', 'VID', 'VIE', 'VIG', 'VIM', 'VIN', 
-  'VIS', 'VLY', 'VOE', 'VOG', 'VOL', 'VOR', 'VOW', 'VOX', 'VOY', 'VUG', 
-  'VUM', 'WAB', 'WAD', 'WAE', 'WAG', 'WAH', 'WAI', 'WAN', 'WAP', 'WAR', 
-  'WAS', 'WAT', 'WAW', 'WAX', 'WAY', 'WEB', 'WED', 'WEE', 'WEM', 'WEN', 
-  'WET', 'WEX', 'WEY', 'WHA', 'WHO', 'WHY', 'WIG', 'WIN', 'WIS', 'WIT', 
-  'WIZ', 'WOE', 'WOF', 'WOG', 'WOK', 'WON', 'WOO', 'WOP', 'WOS', 'WOT', 
-  'WOW', 'WOX', 'WRY', 'WUD', 'WUS', 'WYE', 'WYN', 'XIS', 'YAG', 'YAH', 
-  'YAK', 'YAM', 'YAP', 'YAR', 'YAW', 'YAY', 'YEA', 'YEH', 'YEN', 'YEP', 
-  'YES', 'YET', 'YEW', 'YGO', 'YID', 'YIN', 'YIP', 'YOB', 'YOD', 'YOK', 
-  'YOM', 'YOU', 'YOW', 'YUG', 'YUK', 'YUM', 'YUP', 'YUS', 'ZAG', 'ZAP', 
-  'ZAS', 'ZEA', 'ZED', 'ZEE', 'ZEK', 'ZEL', 'ZEX', 'ZHO', 'ZIG', 'ZIN', 
-  'ZIP', 'ZIT', 'ZIZ', 'ZOA', 'ZOL', 'ZOO', 'ZOS', 'ZUG', 'ZZZ'
-];
-
 // Initialize dynamic word lists
 function initializeWordLists() {
   try {
@@ -273,20 +143,6 @@ function initializeWordLists() {
     }
 
     // Note: Static words are now added to DYNAMIC_WORD_LISTS in the first loop above
-
-    // Add common words with duplicates and empty checks
-    const uniqueWords = new Set(
-      COMMON_WORDS
-        .filter(word => word && word.length >= 3 && word.length <= 8)
-        .map(word => word.toUpperCase())
-    );
-
-    for (const word of uniqueWords) {
-      if (!DYNAMIC_WORD_LISTS[word.length]) {
-        DYNAMIC_WORD_LISTS[word.length] = new Set();
-      }
-      DYNAMIC_WORD_LISTS[word.length].add(word);
-    }
 
     // Add common word endings/prefixes (only the most common ones)
     const COMMON_AFFIXES = [
@@ -323,20 +179,31 @@ function initializeWordLists() {
 initializeWordLists();
 initializeDictionary();
 
-// --- Add external common word list (word-list-json) ---
-import wordJson from 'word-list-json';
-
-wordJson.forEach((w: string) => {
-  const upper = w.toUpperCase();
-  if (
-    upper.length >= 3 &&
-    upper.length <= 8 &&
-    !OFFENSIVE_WORDS.has(upper)
-  ) {
-    DICTIONARY.add(upper);
+// --- Expand dictionary with remote word list (browser-only) ---
+async function loadRemoteWords() {
+  try {
+    const url =
+      'https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt';
+    const txt = await (await fetch(url)).text();
+    txt.split('\n').forEach((w) => {
+      const upper = w.trim().toUpperCase();
+      if (
+        upper.length >= 3 &&
+        upper.length <= 8 &&
+        !OFFENSIVE_WORDS.has(upper)
+      ) {
+        DICTIONARY.add(upper);
+      }
+    });
+    console.log(`Dictionary expanded to ${DICTIONARY.size} words (remote list)`);
+  } catch (err) {
+    console.error('Remote word list load failed', err);
   }
-});
-console.log(`Dictionary expanded to ${DICTIONARY.size} words (with word-list-json)`);
+}
+
+if (typeof fetch === 'function') {
+  loadRemoteWords();
+}
 
 // Test function to verify word validation
 export function testWordValidation() {
