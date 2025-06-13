@@ -19,7 +19,8 @@
     "react-icons": "^5.5.0",
     "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
-    "word-list": "^4.1.0"
+    "word-list": "^4.1.0",
+    "word-list-json": "^1.0.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.10",

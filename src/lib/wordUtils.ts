@@ -323,33 +323,20 @@ function initializeWordLists() {
 initializeWordLists();
 initializeDictionary();
 
-// --- Add external common word list (word-list) ---
-import wordListPath from 'word-list';
+// --- Add external common word list (word-list-json) ---
+import wordJson from 'word-list-json';
 
-// In CRA, importing a text file path returns the URL to the asset. Fetch it at runtime
-async function loadExternalDictionary() {
-  try {
-    const response = await fetch(wordListPath);
-    const text = await response.text();
-    text.split('\n').forEach((w) => {
-      const upper = w.trim().toUpperCase();
-      if (
-        upper.length >= 3 &&
-        upper.length <= 8 &&
-        !OFFENSIVE_WORDS.has(upper)
-      ) {
-        DICTIONARY.add(upper);
-      }
-    });
-    console.log(`Dictionary expanded to ${DICTIONARY.size} words (with word-list)`);
-  } catch (err) {
-    console.error('Failed to load external word list', err);
+wordJson.forEach((w: string) => {
+  const upper = w.toUpperCase();
+  if (
+    upper.length >= 3 &&
+    upper.length <= 8 &&
+    !OFFENSIVE_WORDS.has(upper)
+  ) {
+    DICTIONARY.add(upper);
   }
-}
-
-if (typeof fetch !== 'undefined') {
-  loadExternalDictionary();
-}
+});
+console.log(`Dictionary expanded to ${DICTIONARY.size} words (with word-list-json)`);
 
 // Test function to verify word validation
 export function testWordValidation() {
