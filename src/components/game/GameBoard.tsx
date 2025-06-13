@@ -67,8 +67,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
     maxTime: 300,
   });
   
-  const [_navigate] = useNavigate();
-  const [_theme] = useTheme();
+  const navigate = useNavigate(); // currently unused
+  const themeContext = useTheme(); // currently unused
 
   // Start a new game
   const startNewGame = useCallback((difficulty: 'easy' | 'medium' | 'hard' = 'medium') => {
