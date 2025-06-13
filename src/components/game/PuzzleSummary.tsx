@@ -50,7 +50,8 @@ export const PuzzleSummary: React.FC<PuzzleSummaryProps> = ({
   className = '',
 }) => {
   const par = puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length);
-  const parScore = moves - par;
+  // Calculate par score as par - moves so positive means under par (good), negative means over par (bad)
+  const parScore = par - moves;
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
