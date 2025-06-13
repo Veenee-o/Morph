@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Validation Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-container {
+            margin: 20px 0;
+        }
+        .test-word {
+            margin: 5px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .valid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .invalid {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .summary {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Word Validation Test</h1>
+    <div class="test-container">
+        <h3>Test Words:</h3>
+        <div id="testWords"></div>
+    </div>
+    <div class="results">
+        <h3>Results:</h3>
+        <div id="results"></div>
+        <div id="summary" class="summary"></div>
+    </div>
+
+    <script>
+        // Import the word validation function from the built bundle
+        import { isValidWord } from './static/js/main.js';
+
+        // Test words
+        const testWords = [
+            'cat', 'dog', 'hat', 'pen', 'run', 'sun', 'fun', 'big', 'zoo', 'quiz',
+            'jazz', 'hymn', 'lynx', 'gym', 'pyx', 'cwm', 'qat', 'hajj'
+        ];
+
+        // Display test words
+        const testWordsContainer = document.getElementById('testWords');
+        testWords.forEach(word => {
+            const wordEl = document.createElement('span');
+            wordEl.className = 'test-word';
+            wordEl.textContent = word;
+            testWordsContainer.appendChild(wordEl);
+        });
+
+        // Run tests
+        const resultsContainer = document.getElementById('results');
+        let validCount = 0;
+
+        testWords.forEach(word => {
+            const isValid = isValidWord(word);
+            if (isValid) validCount++;
+            
+            const resultEl = document.createElement('div');
+            resultEl.textContent = `${word}: ${isValid ? '✅ Valid' : '❌ Invalid'}`;
+            resultEl.className = isValid ? 'valid' : 'invalid';
+            resultsContainer.appendChild(resultEl);
+        });
+
+        // Show summary
+        const summaryEl = document.getElementById('summary');
+        summaryEl.textContent = `Valid: ${validCount}/${testWords.length} (${((validCount / testWords.length) * 100).toFixed(1)}%)`;
+    </script>
+</body>
+</html>
