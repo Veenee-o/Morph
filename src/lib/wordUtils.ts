@@ -323,8 +323,8 @@ function initializeWordLists() {
 initializeWordLists();
 initializeDictionary();
 
-// --- Add external common word list (word-list-json) ---
-import wordList from 'word-list-json';
+// --- Add external common word list (an-array-of-english-words) ---
+import wordList from 'an-array-of-english-words';
 
 for (const w of wordList) {
   const upper = w.toUpperCase();
@@ -332,7 +332,7 @@ for (const w of wordList) {
     DICTIONARY.add(upper);
   }
 }
-console.log(`Dictionary expanded to ${DICTIONARY.size} words (with word-list-json)`);
+console.log(`Dictionary expanded to ${DICTIONARY.size} words (with an-array-of-english-words)`);
 
 // Test function to verify word validation
 export function testWordValidation() {
