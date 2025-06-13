@@ -5,6 +5,7 @@ interface PuzzleSummaryProps {
   puzzle: {
     startWord: string;
     endWord: string;
+    parSteps?: number; // dynamic par value if provided
   };
   moves: number;
   time: number; // in seconds
@@ -48,7 +49,7 @@ export const PuzzleSummary: React.FC<PuzzleSummaryProps> = ({
   onPlayAgain,
   className = '',
 }) => {
-  const par = getParForWordLength(puzzle.startWord.length);
+  const par = puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length);
   const parScore = moves - par;
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
