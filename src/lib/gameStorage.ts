@@ -51,8 +51,9 @@ export const saveGameResult = (result: Omit<GameResult, 'id' | 'par' | 'parScore
     const wordLength = result.startWord.length;
     // Use the provided par value if it exists and is defined, otherwise calculate from word length
     const par = result.par !== undefined ? result.par : (DEFAULT_PAR_VALUES[wordLength] || wordLength + 1);
-    const moves = result.wordPath.length - 1;
-    // Calculate par score using the actual par value
+    // Use the moves from the result object
+    const moves = result.moves;
+    // Calculate par score using the actual par value (par - moves)
     const parScore = par - moves;
     
     const newGame: GameResult = {
