@@ -28,21 +28,21 @@ const getParForWordLength = (wordLength: number): number => {
 
 // Helper function to get par label
 const getParLabel = (score: number, forTrophy: boolean = false): string => {
-  // Score is calculated as par - moves, so:
-  // - Positive score means under par (good)
+  // Score is calculated as moves - par, so:
+  // - Negative score means under par (good)
   // - Zero means par (even)
-  // - Negative score means over par (bad)
+  // - Positive score means over par (bad)
   
   if (forTrophy) {
-    // For trophy display, show the relative score (par - moves)
-    if (score > 0) return `-${score}`;  // Under par (good)
-    if (score === 0) return 'E';        // 'E' for even/par
-    return `+${Math.abs(score)}`;       // Over par (bad)
+    // For trophy display, show the relative score (moves - par)
+    if (score < 0) return `${score}`;  // Under par (good) - will show as negative
+    if (score === 0) return 'E';       // 'E' for even/par
+    return `+${score}`;                // Over par (bad) - will show as positive with +
   } else {
     // For other displays, show the traditional par format
-    if (score > 0) return `${score} Under`;  // Under par (good)
-    if (score === 0) return 'Par';          // Exactly par
-    return `${Math.abs(score)} Over`;        // Over par (bad)
+    if (score < 0) return `${Math.abs(score)} Under`;  // Under par (good)
+    if (score === 0) return 'Par';                   // Exactly par
+    return `${score} Over`;                           // Over par (bad)
   }
 };
 
@@ -55,8 +55,8 @@ export const PuzzleSummary: React.FC<PuzzleSummaryProps> = ({
   className = '',
 }) => {
   const par = puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length);
-  // Calculate par score as par - moves so positive means under par (good), negative means over par (bad)
-  const parScore = par - moves;
+  // Calculate par score as moves - par so negative means under par (good), positive means over par (bad)
+  const parScore = moves - par;
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -66,7 +66,7 @@ export const PuzzleSummary: React.FC<PuzzleSummaryProps> = ({
   const handleShare = async () => {
     const shareData = {
       title: 'I just solved a Morph puzzle!',
-      text: `I completed the puzzle in ${moves} moves with a par score of ${getParLabel(parScore)}!`,
+      text: `I completed the puzzle in ${moves} moves (${getParLabel(parScore)})!`,
       url: window.location.href,
     };
 
