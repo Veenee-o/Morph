@@ -91,8 +91,8 @@ const RecentGames: React.FC<RecentGamesProps> = ({ games, onClearHistory, classN
                     <span className="text-gray-500 italic">Incomplete</span>
                   ) : (
                     <div className="flex items-center justify-end space-x-1">
-                      <span className={getScoreColor(game.parScore)}>
-                        {formatGolfScore(game.parScore, game.par)}
+                      <span className={getScoreColor(game.moves - game.par)}>
+                        {formatGolfScore(game.moves - game.par, game.par)}
                       </span>
                     </div>
                   )}
