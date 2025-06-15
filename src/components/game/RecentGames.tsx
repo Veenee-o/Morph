@@ -2,12 +2,12 @@ import * as React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { GameResult } from '../../lib/gameStorage';
 
-// Helper function to format par score in golf style (e.g., 4 Under Par, Par, 1 Over Par)
+// Helper function to format par score in golf style (e.g., 4 Under Par 8, Par 8, 1 Over Par 8)
 // Negative means under par (good), positive means over par (bad)
-const formatGolfScore = (score: number): string => {
-  if (score < 0) return `${-score} Under Par`;
-  if (score === 0) return 'Par';
-  return `${score} Over Par`;
+const formatGolfScore = (score: number, par: number): string => {
+  if (score < 0) return `${-score} Under Par ${par}`;
+  if (score === 0) return `Par ${par}`;
+  return `${score} Over Par ${par}`;
 };
 
 // Helper function to get the appropriate color class for the score
@@ -92,10 +92,7 @@ const RecentGames: React.FC<RecentGamesProps> = ({ games, onClearHistory, classN
                   ) : (
                     <div className="flex items-center justify-end space-x-1">
                       <span className={getScoreColor(game.parScore)}>
-                        {formatGolfScore(game.parScore)}
-                      </span>
-                      <span className="text-gray-400">
-                        ({game.moves})
+                        {formatGolfScore(game.parScore, game.par)}
                       </span>
                     </div>
                   )}
