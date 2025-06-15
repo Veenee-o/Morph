@@ -27,16 +27,15 @@ const getParForWordLength = (wordLength: number): number => {
 };
 
 // Helper function to get par label
-const getParLabel = (score: number, forTrophy: boolean = false): string => {
-  // Score is calculated as moves - par, so:
-  // - Negative score means under par (good) - shows as -X (green)
+const getParLabel = (score: number, forTrophy: boolean = false, par: number = 0): string => {
+  // Score is calculated as moves - par, so negative means under par (good) - shows as -X (green)
   // - Zero means par (even) - shows as E (blue)
   // - Positive score means over par (bad) - shows as +X (red)
   
   if (forTrophy) {
     // For trophy display, show the relative score (moves - par)
     if (score < 0) return `${score}`;  // Under par (good) - will show as negative
-    if (score === 0) return 'E';       // 'E' for even/par
+    if (score === 0) return `Par ${par}`;       // 'Par X' for par
     return `+${score}`;                // Over par (bad) - will show as positive with +
   } else {
     // For other displays, show the traditional par format
@@ -105,7 +104,7 @@ export const PuzzleSummary: React.FC<PuzzleSummaryProps> = ({
               <span className={`text-2xl font-bold ${
                 parScore < 0 ? 'text-green-600' : parScore === 0 ? 'text-blue-600' : 'text-red-600'
               }`}>
-                {getParLabel(parScore, true)}
+                {getParLabel(parScore, true, par)}
               </span>
             </div>
           </div>
