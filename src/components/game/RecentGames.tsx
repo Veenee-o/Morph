@@ -2,24 +2,19 @@ import * as React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { GameResult } from '../../lib/gameStorage';
 
-// Helper function to format par score in golf style (e.g., Eagle, Birdie, Par, Bogey, Double Bogey)
+// Helper function to format par score in golf style (e.g., 4 Under Par, Par, 1 Over Par)
 // Negative means under par (good), positive means over par (bad)
 const formatGolfScore = (score: number): string => {
-  if (score <= -2) return 'Eagle';
-  if (score === -1) return 'Birdie';
+  if (score < 0) return `${-score} Under Par`;
   if (score === 0) return 'Par';
-  if (score === 1) return 'Bogey';
-  if (score === 2) return 'Double Bogey';
-  return `${score} Over`;
+  return `${score} Over Par`;
 };
 
 // Helper function to get the appropriate color class for the score
 const getScoreColor = (score: number): string => {
-  if (score <= -2) return 'text-green-600';  // Eagle or better (best)
-  if (score === -1) return 'text-green-500'; // Birdie (good)
-  if (score === 0) return 'text-blue-600';   // Par (even)
-  if (score === 1) return 'text-red-500';    // Bogey (bad)
-  return 'text-red-600';                    // Double bogey or worse (worst)
+  if (score < 0) return 'text-green-600';  // Under par (good)
+  if (score === 0) return 'text-blue-600'; // Par (even)
+  return 'text-red-600';                    // Over par (bad)
 };
 
 export interface RecentGamesProps {

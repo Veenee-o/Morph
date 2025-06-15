@@ -20,21 +20,21 @@ export interface GameResult {
   isComplete: boolean;
 }
 
-// Calculate par score based on moves and word length
+// Calculate par score based on moves and word length (golf-style scoring)
 export const calculateParScore = (moves: number, wordLength: number): number => {
   const par = DEFAULT_PAR_VALUES[wordLength] || wordLength + 1;
-  // Calculate how many strokes under/over par (negative is good, positive is bad)
-  return par - moves;
+  // Calculate score as moves - par (negative is good, positive is bad)
+  return moves - par;
 };
 
-// Get par label based on par score
+// Get par label based on par score (golf-style scoring)
 export const getParLabel = (parScore: number): string => {
-  if (parScore <= -2) return 'Eagle';
-  if (parScore === -1) return 'Birdie';
+  if (parScore <= -2) return `${-parScore} Under Par`;
+  if (parScore === -1) return `${-parScore} Under Par`;
   if (parScore === 0) return 'Par';
-  if (parScore === 1) return 'Bogey';
-  if (parScore === 2) return 'Double Bogey';
-  return `${parScore} Over`;
+  if (parScore === 1) return `${parScore} Over Par`;
+  if (parScore === 2) return `${parScore} Over Par`;
+  return `${parScore} Over Par`;
 };
 
 const STORAGE_KEY = 'morph_game_history';
@@ -53,8 +53,8 @@ export const saveGameResult = (result: Omit<GameResult, 'id' | 'par' | 'parScore
     const par = result.par !== undefined ? result.par : (DEFAULT_PAR_VALUES[wordLength] || wordLength + 1);
     // Use the moves from the result object
     const moves = result.moves;
-    // Calculate par score using the actual par value (par - moves)
-    const parScore = par - moves;
+    // Calculate par score using golf-style scoring (moves - par)
+    const parScore = moves - par;
     
     const newGame: GameResult = {
       ...result,
