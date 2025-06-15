@@ -2,19 +2,24 @@ import * as React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { GameResult } from '../../lib/gameStorage';
 
-// Helper function to format par score in golf style (e.g., -1 Under Par 5, Par 5, +1 Over Par 5)
+// Helper function to format par score in golf style (e.g., Eagle, Birdie, Par, Bogey, Double Bogey)
 // Negative means under par (good), positive means over par (bad)
-const formatGolfScore = (score: number, par: number): string => {
-  if (score < 0) return `${-score} Under Par ${par}`;     // Under par (good) - shows as -X Under Par X
-  if (score === 0) return `Par ${par}`;         // Exactly par - shows as Par X
-  return `${score} Over Par ${par}`;                  // Over par (bad) - shows as +X Over Par X
+const formatGolfScore = (score: number): string => {
+  if (score <= -2) return 'Eagle';
+  if (score === -1) return 'Birdie';
+  if (score === 0) return 'Par';
+  if (score === 1) return 'Bogey';
+  if (score === 2) return 'Double Bogey';
+  return `${score} Over`;
 };
 
 // Helper function to get the appropriate color class for the score
 const getScoreColor = (score: number): string => {
-  if (score < 0) return 'text-green-600';  // Under par (good)
-  if (score > 0) return 'text-red-600';   // Over par (bad)
-  return 'text-blue-600';                // Exactly par
+  if (score <= -2) return 'text-green-600';  // Eagle or better (best)
+  if (score === -1) return 'text-green-500'; // Birdie (good)
+  if (score === 0) return 'text-blue-600';   // Par (even)
+  if (score === 1) return 'text-red-500';    // Bogey (bad)
+  return 'text-red-600';                    // Double bogey or worse (worst)
 };
 
 export interface RecentGamesProps {
@@ -92,7 +97,7 @@ const RecentGames: React.FC<RecentGamesProps> = ({ games, onClearHistory, classN
                   ) : (
                     <div className="flex items-center justify-end space-x-1">
                       <span className={getScoreColor(game.parScore)}>
-                        {formatGolfScore(game.parScore, game.par)}
+                        {formatGolfScore(game.parScore)}
                       </span>
                       <span className="text-gray-400">
                         ({game.moves})
