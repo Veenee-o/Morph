@@ -2,12 +2,26 @@ import * as React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { GameResult } from '../../lib/gameStorage';
 
-// Helper function to format par score in golf style (e.g., 4 Under Par 8, Par 8, 1 Over Par 8)
-// Negative means under par (good), positive means over par (bad)
+// Helper function to format par score with golf-style notation and symbols
+// e.g., +1 (Par 8), -4 (Par 5), Par (8)
 const formatGolfScore = (score: number, par: number): string => {
-  if (score < 0) return `${-score} Under Par ${par}`;
-  if (score === 0) return `Par ${par}`;
-  return `${score} Over Par ${par}`;
+  if (score === 0) return `Par (${par})`;
+  const symbol = score > 0 ? '+' : '−'; // Unicode minus sign for better appearance
+  return `${symbol}${Math.abs(score)} (Par ${par})`;
+};
+
+// Helper function to get background color for score badge
+const getScoreBackground = (score: number): string => {
+  if (score < 0) return '#e6ffed'; // light green
+  if (score === 0) return '#e6f0ff'; // light blue
+  return '#ffe6e6'; // light red
+};
+
+// Helper function to get score icon
+const getScoreIcon = (score: number): string => {
+  if (score < 0) return '✅'; // green checkmark
+  if (score === 0) return '⚪'; // white circle
+  return '❌'; // red X
 };
 
 // Helper function to get the appropriate color class for the score
@@ -91,7 +105,16 @@ const RecentGames: React.FC<RecentGamesProps> = ({ games, onClearHistory, classN
                     <span className="text-gray-500 italic">Incomplete</span>
                   ) : (
                     <div className="flex items-center justify-end space-x-1">
-                      <span className={getScoreColor(game.moves - game.par)}>
+                      <span 
+                        className={`flex items-center gap-1 ${getScoreColor(game.moves - game.par)}`}
+                        style={{
+                          fontWeight: 'bold',
+                          padding: '2px 6px',
+                          borderRadius: '6px',
+                          backgroundColor: getScoreBackground(game.moves - game.par),
+                        }}
+                      >
+                        {getScoreIcon(game.moves - game.par)}
                         {formatGolfScore(game.moves - game.par, game.par)}
                       </span>
                     </div>
