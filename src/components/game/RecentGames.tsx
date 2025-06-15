@@ -5,16 +5,16 @@ import { GameResult } from '../../lib/gameStorage';
 // Helper function to format par score in golf style (e.g., -1, E, +1)
 // Negative means under par (good), positive means over par (bad)
 const formatGolfScore = (score: number): string => {
-  if (score < 0) return `+${Math.abs(score)}`; // Over par (bad)
-  if (score === 0) return 'E';               // Exactly par
-  return `-${score}`;                        // Under par (good)
+  if (score < 0) return `${score}`;     // Under par (good) - shows as -X
+  if (score === 0) return 'E';         // Exactly par - shows as E
+  return `+${score}`;                  // Over par (bad) - shows as +X
 };
 
 // Helper function to get the appropriate color class for the score
 const getScoreColor = (score: number): string => {
-  if (score < 0) return 'text-red-600';    // Over par (bad)
-  if (score > 0) return 'text-green-600';  // Under par (good)
-  return 'text-blue-600';                  // Exactly par
+  if (score < 0) return 'text-green-600';  // Under par (good)
+  if (score > 0) return 'text-red-600';   // Over par (bad)
+  return 'text-blue-600';                // Exactly par
 };
 
 export interface RecentGamesProps {
