@@ -346,13 +346,13 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
     return parMap[wordLength] || wordLength + 1;
   }, []);
 
-  const getParLabel = useCallback((s: number): string => {
+  const getParLabel = useCallback((s: number, par: number): string => {
     if (s < 0) {
-      return `Par ${-s}`;
+      return `${-s} Under Par ${par}`;
     } else if (s === 0) {
-      return 'Par';
+      return `Par ${par}`;
     } else {
-      return `Par ${s}`;
+      return `${s} Over Par ${par}`;
     }
   }, []);
 
@@ -395,7 +395,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
           {/* Par */}
           <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-4 text-center border border-gray-200 dark:border-gray-700">
             <div className="text-3xl font-bold text-gray-900 dark:text-white">
-              {puzzle ? getParLabel(score) : '-'}
+              {puzzle ? getParLabel(score, puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length)) : '-'}
             </div>
             <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
               Par
