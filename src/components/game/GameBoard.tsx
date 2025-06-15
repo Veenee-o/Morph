@@ -20,6 +20,18 @@ const getTimeForWordLength = (word: string): number => {
   }
 };
 
+// Helper function to get par based on word length
+const getParForWordLength = (wordLength: number): number => {
+  const parMap: Record<number, number> = {
+    3: 4,  // 3-letter words: par 4
+    4: 5,  // 4-letter words: par 5
+    5: 6,  // 5-letter words: par 6
+    6: 7,  // 6-letter words: par 7
+    7: 8,  // 7-letter words: par 8
+  };
+  return parMap[wordLength] || wordLength + 1;
+};
+
 // Interfaces
 type LocalGameResult = {
   time: number;
@@ -68,8 +80,19 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
     timeRemaining: 300,
     maxTime: 300,
   });
-  
+  const [showTimeoutModal, setShowTimeoutModal] = useState(false);
 
+  // Helper function to get par based on word length
+  const getParForWordLength = (wordLength: number): number => {
+    const parMap: Record<number, number> = {
+      3: 4,  // 3-letter words: par 4
+      4: 5,  // 4-letter words: par 5
+      5: 6,  // 5-letter words: par 6
+      6: 7,  // 6-letter words: par 7
+      7: 8,  // 7-letter words: par 8
+    };
+    return parMap[wordLength] || wordLength + 1;
+  };
 
   // Start a new game
   const startNewGame = useCallback((difficulty: 'easy' | 'medium' | 'hard' = 'medium') => {
@@ -214,62 +237,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
     }
     
     // Check if the word is in our dictionary
-    if (!wordUtils.isValidWord(word)) {
-      setGameState(prev => ({
-        ...prev,
-        error: 'Not a valid word'
-      }));
-      return;
-    }
-    
-    // If we've reached the end word, complete the game
-    const isComplete = word === puzzle.endWord;
-    const endTime = isComplete ? Date.now() : null;
-    const currentMoves = gameState.moves + 1;
-    
-    // Get the updated steps for the game state
-    const newSteps = [...gameState.steps];
-    if (isFirstWord) {
-      newSteps[0] = word; // Update first step if it's the first word
-    } else {
-      newSteps.push(word); // Add new step for subsequent words
-    }
-    
-    // Update game state
-    const newGameState = {
-      ...gameState,
-      steps: newSteps,
-      currentStep: isFirstWord ? 1 : gameState.currentStep + 1,
-      moves: currentMoves,
-      error: null,
-      isComplete,
-      endTime
-    };
-    
-    setGameState(newGameState);
-    setInputValue('');
-    
-    // If game is complete, call the handleGameComplete callback
-    if (isComplete && gameState.startTime && endTime) {
-      const timeElapsed = Math.floor((endTime - gameState.startTime) / 1000);
-      const result: LocalGameResult = {
-        time: timeElapsed,
-        // The number of moves is equal to the number of words in the path (including start and end words) minus 1
-        // For example: [start, word1, word2, end] = 3 moves (start->word1, word1->word2, word2->end)
-        morphs: newSteps.length, // This is the correct number of moves
-        wordPath: newSteps,
-        isComplete: true,
-        par: puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length)
-      };
-      handleGameComplete(result);
-    }
-  }, [puzzle, gameState, handleGameComplete]);
-
-  // Clear recent games
-  const clearRecentGames = useCallback(async () => {
-    await clearGameResults();
-    setRecentGames([]);
-  }, []);
+  }, [puzzle, gameState]);
 
   // Timer effect
   useEffect(() => {
@@ -285,12 +253,12 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
           const timeRemaining = Math.max(0, prev.maxTime - elapsed);
           
           if (timeRemaining <= 0) {
-            // Time's up!
             clearInterval(timer);
+            setShowTimeoutModal(true);
             if (puzzle) {
               const result: LocalGameResult = {
                 time: prev.maxTime,
-                morphs: prev.moves, // Use moves from gameState
+                morphs: prev.moves,
                 wordPath: [...prev.steps],
                 isComplete: false,
                 par: puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length)
@@ -310,185 +278,138 @@ const GameBoard: React.FC<GameBoardProps> = ({ onGameComplete }) => {
     };
   }, [gameState.startTime, gameState.isComplete, handleGameComplete, puzzle]);
 
-  // Initialize recent games on component mount
-  useEffect(() => {
-    const loadRecentGames = async () => {
-      const games = await getGameResults();
-      setRecentGames(games);
-    };
-    
-    loadRecentGames();
-    
-    // Start a new game when component mounts with medium difficulty
-    startNewGame('medium');
-    
-    return () => {
-      isMounted.current = false;
-    };
-  }, [startNewGame]);
-
-  // Format time as MM:SS
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  // Calculate par score based on word length
-  const getParForWordLength = useCallback((wordLength: number): number => {
-    const parMap: Record<number, number> = {
-      3: 4,  // 3-letter words: par 4
-      4: 5,  // 4-letter words: par 5
-      5: 6,  // 5-letter words: par 6
-      6: 7,  // 6-letter words: par 7
-      7: 8,  // 7-letter words: par 8
-    };
-    return parMap[wordLength] || wordLength + 1;
-  }, []);
-
-  const getParLabel = useCallback((s: number, par: number): string => {
-    if (s < 0) {
-      return `${-s} Under Par ${par}`;
-    } else if (s === 0) {
-      return `Par ${par}`;
-    } else {
-      return `${s} Over Par ${par}`;
-    }
-  }, []);
-
-  // Render the game board
   return (
-    <div className="min-h-screen bg-[#f8f8f8] dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <header className="mb-8 text-center">
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex-1 overflow-auto p-4">
+        <div className="flex flex-col gap-4">
           {puzzle && (
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Change <span className="text-blue-600 dark:text-blue-400">{puzzle.startWord}</span> to{' '}
-              <span className="text-blue-600 dark:text-blue-400">{puzzle.endWord}</span>
-            </h1>
+            <div className="flex flex-col gap-2">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-semibold">{puzzle.startWord}</span>
+                  <span className="text-gray-500">→</span>
+                  <span className="text-lg font-semibold">{puzzle.endWord}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-500">Time:</span>
+                  <span className="text-sm font-medium">
+                    {Math.floor(gameState.timeRemaining / 60)}:{
+                      Math.floor(gameState.timeRemaining % 60)
+                        .toString()
+                        .padStart(2, '0')
+                    }
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-500">Moves:</span>
+                <span className="text-sm font-medium">{gameState.moves}</span>
+              </div>
+            </div>
           )}
-        </header>
-        
-        {/* Game Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {/* Moves */}
-          <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-4 text-center border border-gray-200 dark:border-gray-700">
-            <div className="text-3xl font-bold text-gray-900 dark:text-white">
-              {gameState.moves}
-            </div>
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Morphs
-            </div>
-          </div>
-          
-          {/* Time */}
-          <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-4 text-center border border-gray-200 dark:border-gray-700">
-            <div className="text-3xl font-bold text-gray-900 dark:text-white">
-              {formatTime(gameState.timeRemaining)}
-            </div>
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Time
-            </div>
-          </div>
-          
-          {/* Par */}
-          <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl p-4 text-center border border-gray-200 dark:border-gray-700">
-            <div className="text-3xl font-bold text-gray-900 dark:text-white">
-              {puzzle ? getParLabel(score, puzzle.parSteps ?? getParForWordLength(puzzle.startWord.length)) : '-'}
-            </div>
-            <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Par
-            </div>
-          </div>
-        </div>
-
-        {/* Game Board */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg p-8 mb-8 border border-gray-100 dark:border-gray-700">
-          {!gameState.isComplete ? (
-            <>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleWordSubmit(inputValue);
+                    }
+                  }}
+                  className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-lg"
+                  placeholder="Enter a word..."
+                  disabled={gameState.isComplete || showTimeoutModal}
+                  autoFocus
+                />
+                <button
+                  onClick={() => handleWordSubmit(inputValue)}
+                  disabled={!inputValue || gameState.isComplete || showTimeoutModal}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:bg-gray-400"
+                >
+                  Submit
+                </button>
+              </div>
               <WordPath 
                 startWord={puzzle?.startWord || ''} 
                 endWord={puzzle?.endWord || ''} 
                 currentStep={gameState.currentStep} 
                 words={gameState.steps} 
               />
-              
-              <div className="mt-10">
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <div className="flex-1">
-                    <input
-                      type="text"
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value.toUpperCase())}
-                      onKeyPress={(e) => e.key === 'Enter' && handleWordSubmit(inputValue)}
-                      className="w-full px-5 py-4 text-lg border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all duration-200 placeholder-gray-400 dark:placeholder-gray-500"
-                      placeholder={`Enter a ${puzzle?.startWord.length}-letter word...`}
-                      maxLength={puzzle?.startWord.length}
-                      disabled={gameState.isComplete}
-                      autoFocus
-                    />
-                  </div>
-                  <button
-                    onClick={() => handleWordSubmit(inputValue)}
-                    disabled={!inputValue || gameState.isComplete}
-                    className="px-8 py-4 bg-blue-500 text-white text-lg font-semibold rounded-xl hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 shadow-md hover:shadow-lg"
-                  >
-                    Submit
-                  </button>
-                </div>
-                {gameState.error && (
-                  <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                    {gameState.error}
-                  </p>
-                )}
-              </div>
-            </>
-          ) : (
-            <>
-              {gameState.isComplete && puzzle && gameState.startTime && gameState.endTime && (
+              {gameState.error && (
+                <div className="text-red-500 text-sm">{gameState.error}</div>
+              )}
+            </div>
+            <div className="flex flex-col gap-4">
+              {puzzle && (
                 <PuzzleSummary
                   puzzle={puzzle}
                   moves={gameState.steps.length}
-                  time={Math.floor((gameState.endTime - gameState.startTime) / 1000)}
+                  time={gameState.endTime ? Math.floor((gameState.endTime - gameState.startTime!) / 1000) : 0}
                   path={gameState.steps}
                   onPlayAgain={() => startNewGame('medium')}
                 />
               )}
-            </>
-          )}
-        </div>
-
-        {/* How to Play */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 mt-8">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">How to Play</h2>
-          <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-            <li className="flex items-start">
-              <span className="mr-2">•</span>
-              <span>Start with the given word at the top</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2">•</span>
-              <span>Change one letter at a time to form a new valid word</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2">•</span>
-              <span>Reach the target word in as few moves as possible</span>
-            </li>
-            <li className="flex items-start">
-              <span className="mr-2">•</span>
-              <span>Try to beat the par score!</span>
-            </li>
-          </ul>
-        </div>
-
-        {/* Recent Games */}
-        <div className="mt-8">
-          <RecentGames games={recentGames} onClearHistory={clearRecentGames} />
+              <RecentGames games={recentGames} />
+            </div>
+          </div>
         </div>
       </div>
+      {showTimeoutModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowTimeoutModal(false);
+              startNewGame('medium');
+            }
+          }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="timeout-modal-title"
+        >
+          <div 
+            className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 
+              id="timeout-modal-title"
+              className="text-2xl font-bold text-blue-600 mb-4"
+            >
+              Time's Up!
+            </h2>
+            <p className="text-gray-600 mb-6">
+              The puzzle was: <strong>{puzzle?.startWord} → {puzzle?.endWord}</strong>
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => {
+                  setShowTimeoutModal(false);
+                  startNewGame('medium');
+                }}
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                autoFocus
+              >
+                Retry
+              </button>
+              <button
+                onClick={() => {
+                  setShowTimeoutModal(false);
+                  startNewGame('medium');
+                }}
+                className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-200"
+              >
+                New Puzzle
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  );
+  ) as React.ReactElement;
 };
 
 export default GameBoard;
