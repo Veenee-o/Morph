@@ -17,13 +17,6 @@ const getScoreBackground = (score: number): string => {
   return '#ffe6e6'; // light red
 };
 
-// Helper function to get score icon
-const getScoreIcon = (score: number): string => {
-  if (score < 0) return '✅'; // green checkmark
-  if (score === 0) return '⚪'; // white circle
-  return '❌'; // red X
-};
-
 // Helper function to get the appropriate color class for the score
 const getScoreColor = (score: number): string => {
   if (score < 0) return 'text-green-600';  // Under par (good)
@@ -106,7 +99,7 @@ const RecentGames: React.FC<RecentGamesProps> = ({ games, onClearHistory, classN
                   ) : (
                     <div className="flex items-center justify-end space-x-1">
                       <span 
-                        className={`flex items-center gap-1 ${getScoreColor(game.moves - game.par)}`}
+                        className={getScoreColor(game.moves - game.par)}
                         style={{
                           fontWeight: 'bold',
                           padding: '2px 6px',
@@ -114,7 +107,6 @@ const RecentGames: React.FC<RecentGamesProps> = ({ games, onClearHistory, classN
                           backgroundColor: getScoreBackground(game.moves - game.par),
                         }}
                       >
-                        {getScoreIcon(game.moves - game.par)}
                         {formatGolfScore(game.moves - game.par, game.par)}
                       </span>
                     </div>
