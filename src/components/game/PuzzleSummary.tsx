@@ -65,7 +65,7 @@ export const PuzzleSummary: React.FC<PuzzleSummaryProps> = ({
   const handleShare = async () => {
     const shareData = {
       title: 'I just solved a Morph puzzle!',
-      text: `I completed the puzzle in ${moves} moves (${getParLabel(parScore)})!`,
+      text: `I completed the puzzle in ${moves} moves (${getParLabel(parScore, true, par)})!`,
       url: window.location.href,
     };
 
